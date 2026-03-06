@@ -1,0 +1,37 @@
+[package]
+name = "multi-host-load-generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4.8", features = ["derive"] }
+futures-io = { version = "0.2.0-beta" }
+reqwest = { version = "0.12.8", default-features = false, features = ["blocking", "json", "http2"] }
+rand = "0.8.5"
+serde = { version = "1.0.192", features = ["derive"] }
+serde_json = "1.0.108"
+serde_derive = "1.0.192"
+crossbeam-channel = "0.5.8"
+crossbeam = "0.8.2"
+redis = "0.23.3"
+zipf = "7.0.1"
+slog = "2.7.0"
+slog-async = "2.8.0"
+slog-term = "2.9.0"
+toml = "0.8.12"
+
+load-gen-api = { path = "../load-gen-api" }
+nando-support = { path = "../../nando-support" }
+object-lib = { path = "../../object-lib" }
+actix-web = "4.9.0"
+chrono = "0.4.38"
+tokio = { version = "1.40.0", features = ["full"] }
+etcd-client = "0.14.0"
+memcache = "0.18.0"
+
+[features]
+
+timing = []
+
+[profile.release]
+debug = 1

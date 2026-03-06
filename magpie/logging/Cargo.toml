@@ -1,0 +1,25 @@
+[package]
+name = "logging"
+version = "0.1.0"
+edition = "2021"
+description = "Facilities for intent and operation logging."
+
+[dependencies]
+async-std = { version = "1.12.0", features = ["unstable"] }
+object-lib = { path = "../../object-lib" }
+object-tracker = { path = "../object-tracker" }
+execution-definitions = { path = "../execution-definitions" }
+nando-support = { path = "../../nando-support" }
+rtrb = "0.3.1"
+crossbeam-channel = "0.5.8"
+serde = { version = "1.0.217", features = ["derive"] }
+core_affinity = "0.8.1"
+
+[features]
+before-images = []
+after-images = []
+before-after-images = ["before-images", "after-images"]
+
+timing-log = []
+
+no-persist = ["object-lib/no-persist"]

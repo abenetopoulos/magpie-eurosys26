@@ -1,0 +1,34 @@
+[package]
+name = "nano4r"
+version = "0.1.0"
+edition = "2021"
+description = "nanotransaction-based graph algorithms for magpie"
+
+[lib]
+crate-type = ["dylib"]
+
+[dependencies]
+
+parking_lot = "0.12.1"
+
+execution-definitions = { path = "../../magpie/execution-definitions" }
+nando-support = { path = "../../nando-support" }
+nandoize = { path = "../../magpie/nandoize", features = ["epic_opts"] }
+object-lib = { path = "../../object-lib" }
+object-tracker = { path = "../../magpie/object-tracker" }
+ownership-tracker = { path = "../../magpie/ownership-tracker" }
+
+kvs = { path = "../kvs" }
+rand = "0.8.5"
+
+[features]
+
+object-caching = ["kvs/object-caching", "object-lib/object-caching", "execution-definitions/object-caching", "nando-support/object-caching", "object-tracker/object-caching"]
+offline = ["ownership-tracker/offline"]
+
+telemetry = ["ownership-tracker/telemetry"]
+
+simd = ["object-lib/simd"]
+
+[profile.release]
+debug = 1

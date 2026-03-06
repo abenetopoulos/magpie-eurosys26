@@ -1,0 +1,4 @@
+[build]
+rustdoc = "rustdoc"
+rustdocflags = "-Zunstable-options --enable-index-page"
+rustflags = ["--cfg", "tokio_unstable"]

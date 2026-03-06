@@ -1,0 +1,36 @@
+[package]
+name = "location-manager"
+version = "0.1.0"
+edition = "2021"
+description = "Responsible for answering data placement questions, and for orchestrating data movement"
+
+[dependencies]
+async-lib = {path = "../async-lib" }
+object-tracker = { path = "../object-tracker" }
+object-lib = { path = "../../object-lib" }
+ownership-tracker = { path = "../ownership-tracker" }
+
+fast_rsync = "0.2.0"
+prost = "0.13.1"
+tonic = "0.12.1"
+async-std = { version = "1.12.0", features = ["unstable"] }
+tokio = { version = "1.36.0", features = ["rt-multi-thread"] }
+num-traits = "0.2.15"
+num-derive = "0.3.3"
+toml = "0.5.10"
+serde = { version = "1.0.217", features = ["derive"] }
+anyhow = "1.0.71"
+parking_lot = "0.12.1"
+tokio-stream = "0.1.15"
+prometheus = "0.13.4"
+lazy_static = "1.4.0"
+# dashmap = "6.0.1"
+dashmap = { version = "5.5.3", features = ["inline"] }
+
+[build-dependencies]
+tonic-build = "0.12.1"
+
+[features]
+
+observability = []
+timing-ownership-transfer = []

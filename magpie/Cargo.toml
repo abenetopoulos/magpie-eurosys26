@@ -1,0 +1,123 @@
+[package]
+name = "magpie"
+version = "0.1.0"
+edition = "2021"
+description = "Magpie Worker"
+
+[workspace]
+members = [
+    "async-lib",
+    "execution-definitions",
+    "location-manager",
+    "logging",
+    "nando-lib",
+    "nandoize",
+    "object-tracker",
+    "ownership-tracker",
+    "scheduling",
+    "async-lib",
+]
+
+[dependencies]
+async-std = { version = "1.12.0", features = ["unstable"] }
+
+async-lib = { path = "./async-lib" }
+execution-definitions = { path = "./execution-definitions" }
+location-manager = { path = "./location-manager" }
+logging = { path = "./logging" }
+nando-lib = { path = "./nando-lib" }
+nando-support = { path = "../nando-support" }
+nandoize = { path = "./nandoize" }
+object-tracker = { path = "./object-tracker" }
+object-lib = { path = "../object-lib" }
+ownership-tracker = { path = "./ownership-tracker" }
+scheduling = { path = "./scheduling" }
+telemetry = { path = "../telemetry" }
+
+tonic = "0.12.1"
+prost = "0.13.1"
+tokio = "1.36.0"
+ctrlc = "3.2.4"
+clap = { version = "4.0.32", features = ["derive"] }
+serde = { version = "1.0.217", features = ["derive"] }
+toml = "0.5.10"
+futures = "0.3.28"
+anyhow = "1.0.71"
+axum = "0.7.4"
+parking_lot = "0.12.1"
+prometheus = "0.13.3"
+tokio-stream = { version = "0.1.15", features = ["net"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+tikv-jemallocator = { version = "0.6", features = ["unprefixed_malloc_on_supported_platforms"] }
+
+[features]
+
+default = ["epic_opts"]
+
+always-flush-total = ["nando-lib/always-flush-total"]
+always-flush-range = ["nando-lib/always-flush-range"]
+
+timing-core-sched = [
+    "nando-lib/timing-core-sched",
+    "execution-definitions/timing",
+]
+
+timing = [
+    "execution-definitions/timing",
+    "nando-support/timing",
+    "nando-lib/timing",
+]
+
+timing-svc-latency = ["scheduling/timing-svc-latency"]
+timing-tm = ["nando-lib/timing-tm"]
+timing-tm-wait = ["nando-lib/timing-tm-wait"]
+timing-exec = ["nando-lib/timing-exec"]
+timing-sched-submission = ["nando-lib/timing-sched-submission"]
+timing-sched-completion = ["nando-lib/timing-sched-completion"]
+timing-log = ["logging/timing-log"]
+
+timing-ownership-transfer = [
+    "scheduling/timing-ownership-transfer",
+    "location-manager/timing-ownership-transfer"
+]
+
+offline = ["nando-lib/offline", "ownership-tracker/offline", "scheduling/offline"]
+
+epic_opts = ["nandoize/epic_opts"]
+
+object-caching = [
+    "execution-definitions/object-caching",
+    "nando-lib/object-caching",
+    "nando-support/object-caching",
+    "object-lib/object-caching",
+    "object-tracker/object-caching",
+    "scheduling/object-caching",
+]
+
+observability = [
+    "location-manager/observability",
+    "scheduling/observability",
+    "nando-lib/observability",
+]
+
+simd = ["object-lib/simd"]
+
+no-persist = ["object-lib/no-persist", "logging/no-persist", "nando-lib/no-persist"]
+
+telemetry = ["nando-lib/telemetry", "scheduling/telemetry", "ownership-tracker/telemetry"]
+
+[build-dependencies]
+tonic-build = "0.12.1"
+
+[profile.release]
+debug = 1
+
+[dev-dependencies]
+rand = "0.8.5"
+rstest = "0.21.0"
+criterion = { version = "0.5.1", features = ["html_reports"] }
+crossbeam-channel = "0.5.13"
+# dashmap = "6.0.1"
+dashmap = { version = "5.5.3", features = ["inline"] }
+rtrb = "0.3.1"

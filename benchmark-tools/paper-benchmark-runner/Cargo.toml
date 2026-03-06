@@ -1,0 +1,19 @@
+[package]
+name = "paper-benchmark-runner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+reqwest = { version = "0.12.4", default-features = false, features = ["blocking", "json", "http2"] }
+serde = { version = "1.0.192", features = ["derive"] }
+serde_json = "1.0.108"
+serde_derive = "1.0.192"
+
+toml = "0.8.19"
+clap = { version = "4.5.17", features = ["derive"] }
+chrono = "0.4.38"
+
+load-gen-api = { path = "../load-gen-api" }
+nando-support = { path = "../../nando-support" }
+ownership-support = { path = "../../ownership-support" }

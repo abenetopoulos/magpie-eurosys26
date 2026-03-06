@@ -1,0 +1,4 @@
+hosts = [ ]
+
+local_mode = false
+port = 52020

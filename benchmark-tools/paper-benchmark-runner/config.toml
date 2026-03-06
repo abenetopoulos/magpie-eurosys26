@@ -1,0 +1,27 @@
+load_gen_hosts = [""]
+load_gen_port = 52020
+
+max_clients_per_load_gen_host = 64
+num_concurrent_clients = [1, 2, 4, 8, 16, 32, 64, 128]
+
+worker_hosts = [""]
+worker_key_file_path = ""
+
+ssh_user = ""
+
+figaro_host = ""
+figaro_host_port = 18080
+
+num_iterations = 10
+num_worker_threads = [1, 2, 4, 8, 16]
+
+num_input_objects = 1000000
+seed = 51017
+
+magpie_root = ""
+magpie_config = ""
+
+bucket_objects = []
+
+sizes_kb = [8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+num_chunks=[1, 4, 8, 16, 32, 64, 128, 256, 512]

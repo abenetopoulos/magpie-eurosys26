@@ -1,0 +1,19 @@
+[package]
+name = "execution-definitions"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+atomic_refcell = "0.1.13"
+
+nando-support = { path = "../../nando-support" }
+object-lib = { path = "../../object-lib" }
+object-tracker = { path = "../object-tracker" }
+ownership-tracker = { path = "../ownership-tracker" }
+serde_json = "1.0.110"
+tokio = "1.37.0"
+
+[features]
+
+timing = []
+object-caching = ["nando-support/object-caching"]

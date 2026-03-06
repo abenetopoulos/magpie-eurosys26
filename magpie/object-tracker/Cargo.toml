@@ -1,0 +1,22 @@
+[package]
+name = "object-tracker"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-std = "1.12.0"
+bincode = "1.3.3"
+lazy_static = "1.4.0"
+memmap2 = "0.5.7"
+parking_lot = "0.12.1"
+rand = "0.8.5"
+
+nando-support = { path = "../../nando-support" }
+object-lib = { path = "../../object-lib" }
+arrayvec = "0.7.6"
+# dashmap = "6.0.1"
+dashmap = { version = "5.5.3", features = ["inline"] }
+
+[features]
+
+object-caching = []

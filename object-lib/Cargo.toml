@@ -1,0 +1,24 @@
+[package]
+name = "object-lib"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+async-std = "1.12.0"
+bincode = "1.3.3"
+lazy_static = "1.4.0"
+memmap2 = "0.5.7"
+parking_lot = "0.12.1"
+rand = { version = "0.8.5", features = ["small_rng"] }
+
+nando-support = { path = "../nando-support" }
+
+[features]
+
+object-caching = []
+
+simd = []
+no-persist = []
+
+[profile.release]
+debug = 1

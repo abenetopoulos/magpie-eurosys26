@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+PROGNAME=$0
+
+usage() {
+  cat << EOF >&2
+Usage: $PROGNAME [-hvo] [-c <flag>]
+
+-c <flag> : Toggle cleaning of existing docs (possible values: {true, false}, default: true).
+-v : Set verbose output for doc generation (default: non-verbose output).
+-o : Open browser after docs are generated (default: do not open).
+-h : Display usage string.
+EOF
+ exit 1
+}
+
+CLEAN=true
+VERBOSE=false
+OPEN_BROWSER=false
+
+DOC_MERGE_DIR=utils/doc-merge
+DOC_MERGE_BIN=$DOC_MERGE_DIR/target/release/doc-merge
+
+while getopts c:v:h:o co; do
+    case $co in
+        (c) CLEAN=$OPTARG;;
+        (v) VERBOSE=true;;
+        (o) OPEN_BROWSER=true;;
+        (h) usage;;
+        (*) usage
+    esac
+done
+shift "$((OPTIND - 1))"
+
+pushd $DOC_MERGE_DIR
+cargo build --release -q
+popd
+
+DOC_FLAGS="--no-deps --workspace --document-private-items"
+if [ "$VERBOSE" = true ]; then
+    DOC_FLAGS="${DOC_FLAGS} --verbose"
+fi
+
+components=("magpie" "figaro" "object-lib" "nando-support")
+DST_DIR="doc"
+if [ "$CLEAN" = true ]; then
+    rm -rf $DST_DIR
+fi
+
+for component in "${components[@]}"; do
+    pushd $component
+
+    if [ "$CLEAN" = true ]; then
+        echo "Will clean existing docs (if any)"
+        cargo clean --doc -q
+    else
+        echo "Will not clean existing docs"
+    fi
+
+    echo "Generating docs for ${component}"
+
+    cargo doc $DOC_FLAGS -q > /dev/null
+    popd
+
+    echo "merging ${component} docs into top-level"
+
+    $DOC_MERGE_BIN --src "${component}/target/doc" --dest doc --create-dest
+done
+
+if [ "$OPEN_BROWSER" = true ]; then
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        xdg-open ./doc/index.html
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        open ./doc/index.html
+    fi
+fi

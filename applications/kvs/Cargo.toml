@@ -1,0 +1,32 @@
+[package]
+name = "kvs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["dylib"]
+
+[dependencies]
+parking_lot = "0.12.1"
+
+nando-support = { path = "../../nando-support" }
+object-lib = { path = "../../object-lib" }
+
+# TODO @remove we should not need to expose these definitions to applications
+execution-definitions = { path = "../../magpie/execution-definitions" }
+object-tracker = { path = "../../magpie/object-tracker" }
+ownership-tracker = { path = "../../magpie/ownership-tracker" }
+# nandoize = { path = "../../magpie/nandoize" }
+nandoize = { path = "../../magpie/nandoize", features = ["epic_opts"] }
+
+[features]
+
+object-caching = ["object-lib/object-caching", "execution-definitions/object-caching", "nando-support/object-caching", "object-tracker/object-caching"]
+offline = ["ownership-tracker/offline"]
+simd = ["object-lib/simd"]
+no-persist = ["object-lib/no-persist"]
+
+telemetry = ["ownership-tracker/telemetry"]
+
+[profile.release]
+debug = 1

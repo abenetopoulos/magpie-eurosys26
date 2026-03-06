@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package dm;
+
+service DataRequest {
+    rpc MoveObject(MoveProperties) returns (ObjectMoveHandle) {};
+    rpc GetMoveStatus(ObjectMoveHandle) returns (ObjectMoveHandle) {};
+
+    rpc TriggerMove(TriggerMoveProperties) returns (ObjectMoveHandle) {};
+}
+
+message MoveProperties {
+    string object_id = 1;
+    string target_host_id = 2;
+    bytes signature = 3;
+}
+
+message TriggerMoveProperties {
+    string object_id = 1;
+    string source_host_id = 2;
+}
+
+message ObjectDescription {
+    string id = 1;
+}
+
+message MoveTarget {
+    string target_host_id = 1;
+}
+
+enum ObjectMoveStatus {
+    NOT_STARTED = 0;
+    IN_PROGRESS = 1;
+    COMPLETED = 2;
+    DENIED = 3;
+}
+
+message ObjectMoveHandle {
+    string id = 1;
+    ObjectMoveStatus move_status = 2;
+}
+
+service DataExchange {
+    rpc CalculateSignature(ObjectDescription) returns (ObjectSignature) {};
+    rpc ApplyDelta(ObjectDelta) returns (ApplyDeltaResult) {};
+}
+
+message ObjectSignature {
+    bytes signature = 1;
+}
+
+message ObjectDelta {
+    string object_id = 1;
+    ObjectSignature object_signature = 2;
+}
+
+message ApplyDeltaResult {
+    ApplyStatus status = 1;
+}
+
+enum ApplyStatus {
+    OK = 0;
+    INVALID_DELTA = 1;
+    UNKNOWN_ERROR = 2;
+}

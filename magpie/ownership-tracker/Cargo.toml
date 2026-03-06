@@ -1,0 +1,28 @@
+[package]
+name = "ownership-tracker"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+object-lib = { path = "../../object-lib" }
+object-tracker = { path = "../object-tracker" }
+nando-support = { path = "../../nando-support" }
+ownership-support = { path = "../../ownership-support" }
+telemetry = { path = "../../telemetry" }
+
+reqwest = { version = "0.11.22", features = ["json"] }
+serde = { version = "1.0.217", features = ["derive"] }
+parking_lot = "0.12.1"
+# dashmap = "6.0.1"
+dashmap = { version = "5.5.3", features = ["inline"] }
+tokio = "1.37.0"
+
+[dev-dependencies]
+
+cbindgen = { version = "0.24.3" }
+
+[features]
+
+offline = []
+telemetry = []

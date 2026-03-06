@@ -1,0 +1,11 @@
+target/
+.DS_Store
+
+**/src/resolver.rs
+!magpie/nandoize/src/resolver.rs
+doc/
+
+tools/**/*.png
+
+applications/nano4r/test-data/*/*
+!applications/nano4r/test-data/*/README.md

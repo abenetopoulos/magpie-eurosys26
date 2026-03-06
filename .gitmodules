@@ -1,0 +1,3 @@
+[submodule "utils/doc-merge"]¬
+    path = utils/doc-merge
+    url = git@github.com:abenetopoulos/doc-merge.git¬

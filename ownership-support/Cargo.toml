@@ -1,0 +1,10 @@
+[package]
+name = "ownership-support"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+nando-support = { path = "../nando-support" }
+serde = "1.0.217"
+serde_json = "1.0.138"

@@ -1,0 +1,51 @@
+hostname = "localhost"
+
+[async_lib_config]
+num_threads = 3
+kind = "RuntimePerCore"
+
+[location_manager_config]
+client_id = 0
+data_server_hosts = ["0.0.0.0"]
+data_server_port = 51018
+
+[location_manager_config.rsync_config]
+block_size = 768
+hash_size = 16
+
+[client_config]
+client_id = 0
+worker_rpc_server_port = 51017
+execution_subsystem_port = 52017
+
+[ownership_tracker_config]
+ownership_lease_duration_secs = 60
+
+[ownership_tracker_config.scheduler_config]
+host = "127.0.0.1"
+port = 8080
+
+[nando_lib_config.scheduler_config]
+input_channel_capacity = 1024
+log_channel_capacity = 1024
+num_completion_threads = 2
+
+[nando_lib_config.scheduler_config.library_paths]
+kvs = "../applications/kvs/target/release/libkvs.so"
+kvs_consumer = "../applications/kvs-consumer/target/release/libkvs_consumer.so"
+nano4r = "../applications/nano4r/target/release/libnano4r.so"
+smith_waterman = "../applications/smith-waterman/target/release/libsmith_waterman.so"
+
+[nando_lib_config.executor_config]
+num_worker_threads = 1
+input_channel_capacity = 512
+
+[logging_config]
+num_executor_threads = 1
+
+[scheduling_config]
+worker_rpc_server_port = 51017
+
+[scheduling_config.scheduler_config]
+host = "127.0.0.1"
+port = 8080

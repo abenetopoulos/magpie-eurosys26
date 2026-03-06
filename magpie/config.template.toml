@@ -1,0 +1,54 @@
+hostname = ""
+
+[async_lib_config]
+num_threads = 2
+kind = "RuntimePerCore"
+
+[location_manager_config]
+client_id = 0
+data_server_hosts = ["0.0.0.0"]
+data_server_port = 51018
+
+[location_manager_config.rsync_config]
+block_size = 768
+hash_size = 16
+
+[client_config]
+client_id = 0
+legacy_service_hosts = ["0.0.0.0"]
+legacy_service_port = 51017
+execution_subsystem_port = 52017
+
+[ownership_tracker_config]
+ownership_lease_duration_secs = 60
+
+[ownership_tracker_config.scheduler_config]
+host = ""
+port = 8080
+
+[nando_lib_config.scheduler_config]
+input_channel_capacity = 1024
+log_channel_capacity = 1024
+num_completion_threads = 1
+
+# NOTE the below path works on macos -- replace with .so variant on linux
+[nando_lib_config.scheduler_config.library_paths]
+kvs = "../applications/kvs/target/release/libkvs.dylib"
+kvs_consumer = "../applications/kvs-consumer/target/release/libkvs_consumer.dylib"
+overhead_gadget = "../applications/overhead-gadget/target/release/liboverhead_gadget.dylib"
+folio = "../applications/folio/target/release/libfolio.dylib"
+nano4r = "../applications/nano4r/target/release/libnano4r.dylib"
+
+[nando_lib_config.executor_config]
+num_worker_threads = 1
+input_channel_capacity = 512
+
+[logging_config]
+num_executor_threads = 1
+
+[scheduling_config]
+worker_rpc_server_port = 51017
+
+[scheduling_config.scheduler_config]
+host = ""
+port = 8080

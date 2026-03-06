@@ -1,0 +1,202 @@
+syntax = "proto3";
+
+package ww;
+
+service WorkerApi {
+    rpc ScheduleNando(ActivationIntent) returns (ActivationResolution) {};
+    rpc ScheduleSpawnedTask(SpawnedTask) returns (ActivationResolution) {};
+    rpc HandleTaskCompletion(TaskCompletion) returns (Empty);
+    rpc AssumeOwnership(AssumeOwnershipRequest) returns (AssumeOwnershipResponse);
+    rpc MoveOwnership(MoveOwnershipRequest) returns (MoveOwnershipResponse);
+    rpc FaultSharedCache(FaultCacheRequest) returns (Empty);
+
+    rpc ScheduleTaskGraph(TaskGraph) returns (TaskGraphResolution) {};
+    rpc UpdateTaskOwnership(SpawnedTaskLocations) returns (Empty) {};
+    rpc AddCacheMapping(CacheMapping) returns (Empty) {};
+}
+
+message Empty {}
+
+message ActivationIntent {
+    uint64 host_idx = 1;
+    string name = 2;
+    repeated NandoArgument args = 3;
+}
+
+message NandoArgument {
+    NandoArgumentKind kind = 1;
+    optional IPtr iptr = 2;
+    optional ScalarValue value = 3;
+    repeated IPtr iptrs = 4;
+
+    optional uint32 unresolved_arg_idx = 5;
+    optional string unresolved_arg_task_id = 6;
+}
+
+enum NandoArgumentKind {
+    REF = 0;
+    VALUE = 1;
+    EPIC = 2;
+    NIL = 3;
+    M_REF = 4;
+    UNRESOLVED = 5;
+}
+
+message IPtr {
+    // FIXME ugh (type)
+    string object_id = 1;
+    uint64 offset = 2;
+    uint64 size = 3;
+}
+
+message ScalarValue {
+    ScalarValueKind kind = 1;
+    optional int32 i32_value = 2;
+    optional uint64 u64_value = 3;
+    optional string string_value = 4;
+    optional bool bool_value = 5;
+    repeated ScalarValue array_values = 6;
+}
+
+enum ScalarValueKind {
+    I32 = 0;
+    U64 = 1;
+    USIZE = 2;
+    U128 = 3;
+    STRING = 4;
+    U8 = 5;
+    BOOL = 6;
+    ARRAY = 7;
+}
+
+message SpawnedTask {
+    // TaskId id = 1;
+    string id = 1;
+    ActivationIntent intent = 2;
+    // optional TaskId parent_task = 3;
+    optional string parent_task = 3;
+    repeated DownstreamDependent downstream_dependents = 4;
+    map<string, bool> upstream_control_dependencies = 5;
+    optional bool mask_invalidations = 6;
+    optional PlanningContext planning_context = 7;
+    bool is_fold = 8;
+}
+
+message ActivationResolution {
+    NandoStatus status = 1;
+    repeated NandoResult result = 2;
+    repeated ObjectVersionPair cacheable_objects = 3;
+}
+
+enum NandoStatusKind {
+    SUCCESS = 0;
+    RECOMPUTED_SITE = 1;
+    ERROR = 2;
+    OTHER = 3;
+}
+
+message NandoStatus {
+    NandoStatusKind kind = 1;
+    optional string new_site = 2;
+    optional string error_string = 3;
+}
+
+message ObjectVersionPair {
+    string object_id = 1;
+    uint64 version = 2;
+}
+
+// NOTE no type aliases, so...
+message NandoResult {
+    NandoArgumentKind kind = 1;
+    optional IPtr iptr = 2;
+    optional ScalarValue value = 3;
+    optional string spawned_epic_id = 4;
+    repeated IPtr iptrs = 5;
+
+    optional uint32 unresolved_arg_idx = 6;
+    optional string unresolved_arg_task_id = 7;
+}
+
+message TaskCompletion {
+    string id = 1;
+    repeated DownstreamDependent tasks_to_notify = 2;
+    repeated NandoResult results = 3;
+    repeated Allocation subgraph_allocations = 4;
+    uint64 notifying_host_idx = 5;
+    repeated NandoStatusKind statuses = 6;
+}
+
+// Tuples of (owning host, object) for objects allocated under a subgraph
+message Allocation {
+    uint64 allocation_host_idx = 1;
+    string allocated_object = 2;
+}
+
+message DownstreamDependent {
+    DownstreamDependentKind kind = 1;
+    // TaskId dependency_id = 2;
+    string dependency_id = 2;
+    optional uint32 argument_idx = 3;
+}
+
+enum DownstreamDependentKind {
+    DATA = 0;
+    CONTROL = 1;
+    PARENT = 2;
+}
+
+message AssumeOwnershipRequest {
+    string object_id = 1;
+    uint64 first_version = 2;
+    bool get_signature = 3;
+}
+
+message AssumeOwnershipResponse {
+    bytes signature = 1;
+}
+
+message MoveOwnershipRequest {
+    repeated string object_refs = 1;
+    string new_host = 2;
+}
+
+message MoveOwnershipResponse {
+    repeated ObjectVersionPair whomstone_versions = 1;
+}
+
+message FaultCacheRequest {
+    uint64 host_idx = 1;
+    string original_object_id = 2;
+    string cached_object_id = 3;
+    uint64 version = 4;
+}
+
+message TaskGraph {
+    repeated SpawnedTask graph_tasks = 1;
+    SpawnedTaskLocations spawned_task_locations = 2;
+}
+
+message SpawnedTaskLocations {
+    map<string, SpawnedTaskIdList> location_map = 1;
+}
+
+message SpawnedTaskIdList {
+    repeated string ids = 1;
+}
+
+message TaskGraphResolution {
+    repeated ActivationResolution activation_resolutions = 1;
+}
+
+message CacheMapping {
+    IPtr original_object = 1;
+    IPtr cache_object = 2;
+    uint64 version = 3;
+    uint64 original_owner_idx = 4;
+}
+
+message PlanningContext {
+    uint64 idx = 1;
+    string plan_key = 2;
+}
